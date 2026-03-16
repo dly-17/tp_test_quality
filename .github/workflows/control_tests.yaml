@@ -24,3 +24,28 @@ jobs:
 
       - name: Run flake8
         uses: py-actions/flake8@v2
+
+  create_commit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.x"
+
+      - name: Install pytest
+        run: pip install pytest
+
+      - name: Push a file to our repository
+        run: |
+          pytest > log_pytest.txt
+          git config --global user.email "my-bot@bot.com"
+          git config --global user.name "my-bot"
+          git add log_pytest.txt
+          git commit -m "Ajout automatique du log de test"
+          git push
